@@ -2,9 +2,14 @@ import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import * as Joi from 'joi';
 import { EnvironmentService } from './environment.service';
+import { SeedService } from './seed.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Client } from 'src/clients/entities/client.entity';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([Client, Transaction]),
     NestConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -20,11 +25,10 @@ import { EnvironmentService } from './environment.service';
         DB_NAME: Joi.string().required(),
         DB_USER: Joi.string().required(),
         DB_PASS: Joi.string().required(),
-        PAYMENT_GATEWAY_URL: Joi.string().required(),
       }),
     }),
   ],
-  providers: [EnvironmentService],
+  providers: [EnvironmentService, SeedService],
   exports: [EnvironmentService],
 })
 export class ConfigModule {}

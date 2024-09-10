@@ -4,9 +4,6 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EnvironmentService } from './config/environment.service';
 import { ConfigModule } from './config/config.module';
-import { BullModule } from '@nestjs/bull';
-import { CacheModule, CacheStore } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -23,35 +20,12 @@ import * as redisStore from 'cache-manager-redis-store';
         password: environmentService.DB_PASS,
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
-        logging: false,
-      }),
-    }),
-    BullModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [EnvironmentService],
-      useFactory: (environmentService: EnvironmentService) => ({
-        connection: {
-          host: environmentService.REDIS_HOST,
-          port: environmentService.REDIS_PORT,
+        dropSchema: true,
+        logging: true,
+        pool: {
+          max: 10,
+          min: 2,
         },
-        defaultJobOptions: {
-          removeOnComplete: 100,
-          removeOnFail: 10000,
-          attempts: 10,
-          backoff: {
-            type: 'exponential',
-            delay: 30000,
-          },
-        },
-      }),
-    }),
-    CacheModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [EnvironmentService],
-      useFactory: (environmentService: EnvironmentService) => ({
-        store: redisStore.redisStore as unknown as CacheStore,
-        host: environmentService.REDIS_HOST,
-        port: environmentService.REDIS_PORT,
       }),
     }),
     ClientsModule,

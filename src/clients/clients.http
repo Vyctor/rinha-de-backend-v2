@@ -1,0 +1,15 @@
+### Create a client
+
+POST http://localhost:3000/clientes
+Content-Type: application/json
+
+{
+  "limit": 10000,
+  "balance": 0
+}
+
+### Find all clients
+
+GET http://localhost:3000/clientes
+Content-Type: application/json
+ 

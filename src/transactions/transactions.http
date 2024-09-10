@@ -1,0 +1,16 @@
+### Create a transaction
+
+POST http://localhost:3000/clientes/1/transacoes
+Content-Type: application/json
+
+{
+  "valor": 100,
+  "tipo": "d",
+  "descricao": "credito"
+}
+
+### Find all transaction
+
+GET http://localhost:3000/clientes/1/extrato
+Content-Type: application/json
+ 
