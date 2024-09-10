@@ -9,9 +9,12 @@ services:
       POSTGRES_DB: loja-virtual
     volumes:
       - .docker/postgres/data:/var/lib/postgresql/data
-  redis:
-    image: redis:latest
-    ports:
-      - '6379:6379'
-    volumes:
-      - .docker/redis/data:/data
+    deploy:
+      resources:
+        limits:
+          # Note que a soma de todos os limites dos serviços
+          # aqui declarados é de 1.5 unidades de CPU e 550MB
+          # de memória. A distribuição feita aqui é apenas
+          # um exemplo – distribua como quiser.
+          cpus: '1'
+          memory: '250MB'
