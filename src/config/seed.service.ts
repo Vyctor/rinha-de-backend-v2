@@ -15,8 +15,6 @@ export class SeedService {
 
   async seedUsers() {
     await this.transactionsRepository.delete({});
-    await this.clientRepository.delete({});
-
     const users = [
       {
         id: 1,

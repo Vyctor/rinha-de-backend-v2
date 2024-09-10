@@ -11,10 +11,11 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      errorHttpStatusCode: 422,
     }),
   );
   const seed = app.get(SeedService);
   await seed.seedUsers();
-  await app.listen(3000);
+  await app.listen(process.env.APP_PORT);
 }
 bootstrap();

@@ -20,11 +20,11 @@ import { ConfigModule } from './config/config.module';
         password: environmentService.DB_PASS,
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
-        dropSchema: true,
         logging: true,
         pool: {
-          max: 10,
-          min: 2,
+          max: 200, // Número máximo de conexões
+          min: 10, // Número mínimo de conexões
+          idleTimeoutMillis: 30000, // Tempo de vida ocioso
         },
       }),
     }),

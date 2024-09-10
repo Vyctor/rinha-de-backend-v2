@@ -30,54 +30,51 @@ export class TransactionsService {
   async create(
     createTransactionInput: CreateTransactionInput,
   ): Promise<CreateTransactionOutput> {
-    return await this.dataSource.transaction(async (manager) => {
-      const user = await manager.findOne(Client, {
-        where: {
-          id: createTransactionInput.clientId,
-        },
-      });
-
-      if (!user) {
-        throw new NotFoundException('Client not found');
-      }
-
-      await manager.insert(
-        Transaction,
-        manager.create(Transaction, {
-          ...createTransactionInput,
-          client: {
+    try {
+      return await this.dataSource.transaction(async (manager) => {
+        const client = await manager.findOne(Client, {
+          where: {
             id: createTransactionInput.clientId,
           },
-        }),
-      );
+        });
 
-      const transactions = await manager.find(Transaction, {
-        where: {
-          client: {
-            id: createTransactionInput.clientId,
-          },
-        },
-      });
-
-      const balance = transactions.reduce((acc, value) => {
-        if (value.type === 'c') {
-          return acc + value.value;
+        if (!client) {
+          throw new NotFoundException('Client not found');
         }
-        return acc - value.value;
-      }, 0);
 
-      if (balance + user.limit < 0) {
-        throw new UnprocessableEntityException('Insufficient funds');
-      }
+        if (createTransactionInput.type === 'c') {
+          client.balance += createTransactionInput.value;
+        } else {
+          client.balance -= createTransactionInput.value;
+        }
 
-      user.balance = balance;
-      await manager.save(Client, user);
+        if (client.balance + client.limit < 0) {
+          throw new UnprocessableEntityException('Insufficient funds');
+        }
 
-      return {
-        limite: user.limit,
-        saldo: user.balance,
-      };
-    });
+        await Promise.all([
+          await manager.update(Client, client.id, {
+            balance: client.balance,
+          }),
+          await manager.insert(
+            Transaction,
+            manager.create(Transaction, {
+              ...createTransactionInput,
+              client: {
+                id: createTransactionInput.clientId,
+              },
+            }),
+          ),
+        ]);
+
+        return {
+          limite: client.limit,
+          saldo: client.balance,
+        };
+      });
+    } catch (e) {
+      throw e;
+    }
   }
 
   async getTransactions(clientId: number) {
@@ -101,7 +98,6 @@ export class TransactionsService {
         where: {
           client: user,
         },
-        loadRelationIds: true,
         order: {
           createdAt: 'DESC',
         },

@@ -32,12 +32,4 @@ export class EnvironmentService {
   get DB_PASS(): string {
     return this.config.get<string>('DB_PASS');
   }
-
-  get REDIS_HOST(): string {
-    return this.config.get<string>('REDIS_HOST');
-  }
-
-  get REDIS_PORT(): number {
-    return this.config.get<number>('REDIS_PORT');
-  }
 }

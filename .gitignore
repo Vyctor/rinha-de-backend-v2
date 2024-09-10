@@ -5,6 +5,7 @@
 
 # DOCKER
 .docker
+.tests
 
 # Logs
 logs
