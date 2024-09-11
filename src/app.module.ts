@@ -22,9 +22,10 @@ import { ConfigModule } from './config/config.module';
         synchronize: true,
         logging: false,
         pool: {
-          max: 150, // Número máximo de conexões
-          min: 50, // Número mínimo de conexões
-          idleTimeoutMillis: 10000, // Tempo de vida ocioso
+          max: 150,
+          min: 25,
+          acquire: 30000,
+          idle: 10000,
         },
       }),
     }),

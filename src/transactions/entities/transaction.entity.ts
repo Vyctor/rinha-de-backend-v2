@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -10,6 +11,7 @@ import {
 } from 'typeorm';
 
 @Entity()
+@Index(['client', 'createdAt'])
 export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;

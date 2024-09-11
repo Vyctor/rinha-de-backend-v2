@@ -12,6 +12,7 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       errorHttpStatusCode: 422,
+      whitelist: true,
     }),
   );
   const seed = app.get(SeedService);

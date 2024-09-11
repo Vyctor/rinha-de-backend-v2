@@ -46,10 +46,10 @@ export class TransactionsService {
           client.balance += createTransactionInput.value;
         } else {
           client.balance -= createTransactionInput.value;
-        }
 
-        if (client.balance + client.limit < 0) {
-          throw new UnprocessableEntityException('Insufficient funds');
+          if (client.balance + client.limit < 0) {
+            throw new UnprocessableEntityException('Insufficient funds');
+          }
         }
 
         await Promise.all([
@@ -73,7 +73,7 @@ export class TransactionsService {
         };
       });
     } catch (e) {
-      throw e;
+      throw new UnprocessableEntityException('Insufficient funds');
     }
   }
 
