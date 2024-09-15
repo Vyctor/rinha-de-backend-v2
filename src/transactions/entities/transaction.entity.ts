@@ -25,7 +25,7 @@ export class Transaction {
   type: string;
 
   @Column({
-    length: 100,
+    length: 10,
   })
   description: string;
 
