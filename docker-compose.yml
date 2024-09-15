@@ -85,3 +85,5 @@ services:
           memory: '155MB'
     depends_on:
       - postgres
+        
+        
